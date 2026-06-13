@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrendPulse — Social Media Research Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white: #ffffff;
+  --gray-50: #f8f9fc;
+  --gray-100: #f1f3f8;
+  --gray-200: #e4e8f0;
+  --gray-300: #cdd4e0;
+  --gray-400: #9aa3b4;
+  --gray-500: #6b7589;
+  --gray-700: #374151;
+  --gray-900: #111827;
+  --blue: #2563eb;
+  --blue-light: #dbeafe;
+  --blue-mid: #93c5fd;
+  --indigo: #4f46e5;
+  --indigo-light: #e0e7ff;
+  --green: #059669;
+  --green-light: #d1fae5;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --pink: #db2777;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-900);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: var(--shadow-sm);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--gray-900);
+  letter-spacing: -0.4px;
+  text-decoration: none;
+}
+.brand-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--blue), var(--indigo));
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 16px;
+}
+.brand span { color: var(--blue); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: var(--green);
+  background: var(--green-light); padding: 5px 12px; border-radius: 100px;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  background: var(--green); border-radius: 50%;
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)}
+}
+.api-badge {
+  font-size: 11px; font-weight: 600; color: var(--gray-500);
+  background: var(--gray-100); padding: 5px 10px; border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+}
+/* ── LAYOUT ── */
+.layout { display: flex; min-height: calc(100vh - 60px); }
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px; background: var(--white);
+  border-right: 1px solid var(--gray-200);
+  padding: 20px 12px; position: sticky;
+  top: 60px; height: calc(100vh - 60px);
+  overflow-y: auto; flex-shrink: 0;
+}
+.sidebar-label {
+  font-size: 10px; font-weight: 700; color: var(--gray-400);
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 0 10px; margin-bottom: 8px; margin-top: 16px;
+}
+.sidebar-label:first-child { margin-top: 0; }
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  color: var(--gray-500); transition: all .15s;
+  border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: var(--gray-100); color: var(--gray-900); }
+.nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+.nav-item .nav-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.nav-item.active .nav-icon { background: rgba(37,99,235,.12); }
+.nav-item:not(.active) .nav-icon { background: var(--gray-100); }
+/* ── MAIN ── */
+.main { flex: 1; padding: 28px 32px; max-width: 1100px; min-width: 0; }
+/* ── PAGE HEADER ── */
+.page-header { margin-bottom: 24px; }
+.page-title {
+  font-size: 22px; font-weight: 800; color: var(--gray-900);
+  letter-spacing: -.4px; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.platform-badge {
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 100px; letter-spacing: .04em;
+}
+.page-sub { font-size: 13px; color: var(--gray-500); }
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 14px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm);
+}
+.stat-num {
+  font-size: 26px; font-weight: 800; color: var(--gray-900);
+  letter-spacing: -.5px; margin-bottom: 2px;
+  font-family: 'DM Mono', monospace;
+}
+.stat-label {
+  font-size: 11px; color: var(--gray-400); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+/* ── TOOL GRID ── */
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(340px,1fr)); gap: 18px; }
+/* ── TOOL CARD ── */
+.tool-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s, border-color .2s;
+}
+.tool-card:hover { box-shadow: var(--shadow); border-color: var(--gray-300); }
+.tool-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.tool-meta { display: flex; align-items: center; gap: 10px; }
+.tool-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.tool-name { font-size: 14px; font-weight: 700; color: var(--gray-900); margin-bottom: 1px; }
+.tool-desc { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+.tool-chip {
+  font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px;
+  background: var(--gray-100); color: var(--gray-500);
+  letter-spacing: .04em; white-space: nowrap;
+}
+/* ── INPUTS ── */
+.tool-input {
+  width: 100%; padding: 10px 13px;
+  background: var(--gray-50); border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm); color: var(--gray-900);
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;
+  font-weight: 500; outline: none; margin-bottom: 10px;
+  transition: border-color .15s, background .15s;
+}
+.tool-input:focus { border-color: var(--blue); background: var(--white); }
+.tool-input::placeholder { color: var(--gray-400); font-weight: 400; }
+/* ── BUTTONS ── */
+.btn-run {
+  width: 100%; padding: 10px 16px; border-radius: var(--radius-sm);
+  border: none; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--blue); color: white;
+}
+.btn-run:hover { background: #1d4ed8; transform: translateY(-1px); }
+.btn-run:active { transform: translateY(0); }
+.btn-run:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.btn-secondary {
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200); background: var(--white);
+  color: var(--gray-700); font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
+}
+.btn-secondary:hover { background: var(--gray-50); border-color: var(--gray-300); }
+/* ── RESULTS ── */
+.results-box {
+  margin-top: 14px; background: var(--gray-50);
+  border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  padding: 14px; display: none; font-size: 13px;
+  color: var(--gray-700); animation: fadeIn .2s ease;
+}
+.results-box.show { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.result-label {
+  font-size: 10px; font-weight: 700; color: var(--gray-400);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px;
+}
+.result-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--gray-200);
+  font-size: 13px; color: var(--gray-700);
+}
+.result-row:last-child { border-bottom: none; padding-bottom: 0; }
+.result-row:first-child { padding-top: 0; }
+.result-val {
+  font-weight: 700; color: var(--blue); font-size: 12px;
+  white-space: nowrap; font-family: 'DM Mono', monospace;
+}
+.tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tag {
+  display: inline-flex; align-items: center; padding: 4px 11px;
+  background: var(--blue-light); color: var(--blue); border-radius: 100px;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all .12s;
+  border: 1px solid rgba(37,99,235,.15);
+}
+.tag:hover { background: var(--blue); color: white; }
+.tag.copied { background: var(--green-light); color: var(--green); border-color: rgba(5,150,105,.2); }
+/* ── LOADING ── */
+.loading-state {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--gray-400); font-size: 13px; font-weight: 500; padding: 4px 0;
+}
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--gray-200); border-top-color: var(--blue);
+  border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+/* ── ERROR ── */
+.error-msg {
+  color: var(--red); font-size: 12px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px; margin-top: 8px;
+}
+/* ── COPY ALL ── */
+.copy-all-row {
+  display: flex; justify-content: flex-end; margin-top: 10px;
+  padding-top: 10px; border-top: 1px solid var(--gray-200);
+}
+/* ── WORKSPACE ── */
+.workspace { display: none; }
+.workspace.active { display: block; }
+/* ── PLATFORM ICON COLORS ── */
+.tt-icon { background: #fff0f3; }
+.ig-icon { background: #fdf2f8; }
+.li-icon { background: #eff6ff; }
+.tw-icon { background: #f0fdf4; }
+.pt-icon { background: #fff5f5; }
+.fb-icon { background: #eff6ff; }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 10px; }
+
+/* ── DASHBOARD HOME ── */
+#ws-dashboard .platform-cards {
+  display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 18px;
+}
+.platform-card {
+  background: var(--white); border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius); padding: 24px; cursor: pointer;
+  transition: all .2s; box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; gap: 14px;
+  text-align: left;
+}
+.platform-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.platform-card-header { display: flex; align-items: center; gap: 14px; }
+.platform-card-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.platform-card-title { font-size: 16px; font-weight: 800; color: var(--gray-900); margin-bottom: 2px; }
+.platform-card-sub { font-size: 12px; color: var(--gray-400); font-weight: 500; }
+.platform-card-tools {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.platform-card-tool {
+  font-size: 11px; font-weight: 600; padding: 3px 9px;
+  border-radius: 100px; background: var(--gray-100); color: var(--gray-500);
+}
+.platform-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 4px;
+}
+.platform-card-count { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+.platform-card-arrow {
+  font-size: 18px; color: var(--gray-300); transition: color .15s, transform .15s;
+}
+.platform-card:hover .platform-card-arrow { color: var(--blue); transform: translateX(3px); }
+
+/* ── DASHBOARD STATS ── */
+.dash-stats {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px;
+}
+.dash-stat {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.dash-stat-num {
+  font-size: 30px; font-weight: 800; color: var(--gray-900);
+  font-family: 'DM Mono', monospace; letter-spacing: -.5px; margin-bottom: 2px;
+}
+.dash-stat-label { font-size: 11px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.section-label {
+  font-size: 11px; font-weight: 700; color: var(--gray-400);
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px;
+}
+
+/* ── WELCOME BANNER ── */
+.welcome-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 50%, #5b21b6 100%);
+  border-radius: var(--radius); padding: 28px 32px; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: white; position: relative; overflow: hidden;
+}
+.welcome-banner::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,.05); border-radius: 50%;
+}
+.welcome-banner::after {
+  content: ''; position: absolute; bottom: -50px; right: 80px;
+  width: 140px; height: 140px;
+  background: rgba(255,255,255,.04); border-radius: 50%;
+}
+.wb-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.wb-sub { font-size: 13px; opacity: .75; }
+.wb-emoji { font-size: 48px; position: relative; z-index: 1; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { padding: 20px 16px; }
+  .stats-row, .dash-stats { grid-template-columns: repeat(2,1fr); }
+  .tool-grid, #ws-dashboard .platform-cards { grid-template-columns: 1fr; }
+  .welcome-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="brand" href="#" onclick="switchPlatform('dashboard',null)">
+    <div class="brand-icon">⚡</div>
+    Trend<span>Pulse</span>
+  </a>
+  <div class="topbar-right">
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      AI Online
+    </div>
+    <div class="api-badge">Gemini Flash</div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Navigation</div>
+    <button class="nav-item active" onclick="switchPlatform('dashboard',this)">
+      <div class="nav-icon">🏠</div> Dashboard
+    </button>
+
+    <div class="sidebar-label">Platforms</div>
+    <button class="nav-item" onclick="switchPlatform('tiktok',this)">
+      <div class="nav-icon">🎵</div> TikTok
+    </button>
+    <button class="nav-item" onclick="switchPlatform('instagram',this)">
+      <div class="nav-icon">📸</div> Instagram
+    </button>
+    <button class="nav-item" onclick="switchPlatform('linkedin',this)">
+      <div class="nav-icon">💼</div> LinkedIn
+    </button>
+    <button class="nav-item" onclick="switchPlatform('twitter',this)">
+      <div class="nav-icon">🐦</div> Twitter / X
+    </button>
+    <button class="nav-item" onclick="switchPlatform('pinterest',this)">
+      <div class="nav-icon">📌</div> Pinterest
+    </button>
+    <button class="nav-item" onclick="switchPlatform('facebook',this)">
+      <div class="nav-icon">👥</div> Facebook
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="ws-dashboard" class="workspace active">
+      <div class="welcome-banner">
+        <div>
+          <div class="wb-title">Welcome to TrendPulse ⚡</div>
+          <div class="wb-sub">AI-powered research for 6 platforms — keywords, hashtags, viral ideas & more</div>
+        </div>
+        <div class="wb-emoji">🚀</div>
+      </div>
+
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-num" id="d-total">0</div>
+          <div class="dash-stat-label">Total Searches</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-num">6</div>
+          <div class="dash-stat-label">Platforms</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-num">35+</div>
+          <div class="dash-stat-label">AI Tools</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-num" id="d-results">0</div>
+          <div class="dash-stat-label">Results Generated</div>
+        </div>
+      </div>
+
+      <div class="section-label">Choose a Platform to Start</div>
+      <div class="platform-cards">
+
+        <button class="platform-card" onclick="switchPlatform('tiktok',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon tt-icon">🎵</div>
+            <div>
+              <div class="platform-card-title">TikTok</div>
+              <div class="platform-card-sub">Video content & trend research</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">Keywords</span>
+            <span class="platform-card-tool">Hashtags</span>
+            <span class="platform-card-tool">Viral Ideas</span>
+            <span class="platform-card-tool">Analyzer</span>
+            <span class="platform-card-tool">Competitors</span>
+            <span class="platform-card-tool">Best Times</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="platform-card" onclick="switchPlatform('instagram',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon ig-icon">📸</div>
+            <div>
+              <div class="platform-card-title">Instagram</div>
+              <div class="platform-card-sub">Reels, hashtags & profile growth</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">Hashtags</span>
+            <span class="platform-card-tool">Reels Strategy</span>
+            <span class="platform-card-tool">Profile Audit</span>
+            <span class="platform-card-tool">Engagement Rate</span>
+            <span class="platform-card-tool">Competitors</span>
+            <span class="platform-card-tool">Best Times</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="platform-card" onclick="switchPlatform('linkedin',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon li-icon">💼</div>
+            <div>
+              <div class="platform-card-title">LinkedIn</div>
+              <div class="platform-card-sub">B2B leads & professional content</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">B2B Keywords</span>
+            <span class="platform-card-tool">Lead Finder</span>
+            <span class="platform-card-tool">Viral Posts</span>
+            <span class="platform-card-tool">Company Analysis</span>
+            <span class="platform-card-tool">Profile Optimizer</span>
+            <span class="platform-card-tool">Industry Trends</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="platform-card" onclick="switchPlatform('twitter',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon tw-icon">🐦</div>
+            <div>
+              <div class="platform-card-title">Twitter / X</div>
+              <div class="platform-card-sub">Threads, trends & audience research</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">Keywords</span>
+            <span class="platform-card-tool">Trending Topics</span>
+            <span class="platform-card-tool">Thread Ideas</span>
+            <span class="platform-card-tool">Account Analyzer</span>
+            <span class="platform-card-tool">Competitors</span>
+            <span class="platform-card-tool">Best Times</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="platform-card" onclick="switchPlatform('pinterest',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon pt-icon">📌</div>
+            <div>
+              <div class="platform-card-title">Pinterest</div>
+              <div class="platform-card-sub">Pin strategy & visual content SEO</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">Pin Keywords</span>
+            <span class="platform-card-tool">Trending Topics</span>
+            <span class="platform-card-tool">Viral Pins</span>
+            <span class="platform-card-tool">Profile Audit</span>
+            <span class="platform-card-tool">Board Analysis</span>
+            <span class="platform-card-tool">Search Demand</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+        <button class="platform-card" onclick="switchPlatform('facebook',null)">
+          <div class="platform-card-header">
+            <div class="platform-card-icon fb-icon">👥</div>
+            <div>
+              <div class="platform-card-title">Facebook</div>
+              <div class="platform-card-sub">Pages, groups & ad audience research</div>
+            </div>
+          </div>
+          <div class="platform-card-tools">
+            <span class="platform-card-tool">Keywords</span>
+            <span class="platform-card-tool">Group Strategy</span>
+            <span class="platform-card-tool">Viral Posts</span>
+            <span class="platform-card-tool">Page Analyzer</span>
+            <span class="platform-card-tool">Ad Audience</span>
+            <span class="platform-card-tool">Best Times</span>
+          </div>
+          <div class="platform-card-footer">
+            <span class="platform-card-count">6 tools</span>
+            <span class="platform-card-arrow">→</span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ══ TIKTOK ══ -->
+    <div id="ws-tiktok" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          🎵 TikTok Research
+          <span class="platform-badge" style="background:#fff0f3;color:#ff0050;">TikTok</span>
+        </div>
+        <div class="page-sub">AI-powered keyword, hashtag & content research for TikTok</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="tt-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="tt-s2">0</div><div class="stat-label">Keywords</div></div>
+        <div class="stat-card"><div class="stat-num" id="tt-s3">0</div><div class="stat-label">Hashtags</div></div>
+        <div class="stat-card"><div class="stat-num" id="tt-s4">0</div><div class="stat-label">Ideas</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">🔑</div>
+              <div><div class="tool-name">Keyword Generator</div><div class="tool-desc">Real search terms people use on TikTok</div></div>
+            </div><div class="tool-chip">SEO</div>
+          </div>
+          <input class="tool-input" id="tt-kw-in" placeholder="e.g. fitness, cooking, fashion…">
+          <button class="btn-run" onclick="runTool('tt-kw-in','tt-kw-out','tt-s1','tt-s2','keyword','tiktok')">⚡ Generate Keywords</button>
+          <div class="results-box" id="tt-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">🔥</div>
+              <div><div class="tool-name">Trending Hashtags</div><div class="tool-desc">High-reach hashtags for your niche</div></div>
+            </div><div class="tool-chip">Tags</div>
+          </div>
+          <input class="tool-input" id="tt-ht-in" placeholder="e.g. skincare, gaming, travel…">
+          <button class="btn-run" onclick="runTool('tt-ht-in','tt-ht-out','tt-s1','tt-s3','hashtag','tiktok')">🔥 Find Hashtags</button>
+          <div class="results-box" id="tt-ht-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">🚀</div>
+              <div><div class="tool-name">Viral Content Ideas</div><div class="tool-desc">Proven video formats that go viral</div></div>
+            </div><div class="tool-chip">Ideas</div>
+          </div>
+          <input class="tool-input" id="tt-vr-in" placeholder="e.g. home workout, meal prep…">
+          <button class="btn-run" onclick="runTool('tt-vr-in','tt-vr-out','tt-s1','tt-s4','viral','tiktok')">🚀 Get Viral Ideas</button>
+          <div class="results-box" id="tt-vr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">👤</div>
+              <div><div class="tool-name">Account Analyzer</div><div class="tool-desc">Content strategy & growth insights</div></div>
+            </div><div class="tool-chip">Analyze</div>
+          </div>
+          <input class="tool-input" id="tt-ac-in" placeholder="e.g. @charlidamelio or fitness creator…">
+          <button class="btn-run" onclick="runTool('tt-ac-in','tt-ac-out','tt-s1','','account','tiktok')">🔍 Analyze Account</button>
+          <div class="results-box" id="tt-ac-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">⚔️</div>
+              <div><div class="tool-name">Competitor Analysis</div><div class="tool-desc">Market gaps & opportunity scoring</div></div>
+            </div><div class="tool-chip">Research</div>
+          </div>
+          <input class="tool-input" id="tt-cp-in" placeholder="e.g. cooking videos, fitness niche…">
+          <button class="btn-run" onclick="runTool('tt-cp-in','tt-cp-out','tt-s1','','competitor','tiktok')">⚔️ Analyze Market</button>
+          <div class="results-box" id="tt-cp-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tt-icon">⏰</div>
+              <div><div class="tool-name">Best Posting Times</div><div class="tool-desc">Optimal schedule for max reach</div></div>
+            </div><div class="tool-chip">Schedule</div>
+          </div>
+          <input class="tool-input" id="tt-tm-in" placeholder="e.g. Pakistan, fashion niche, teens…">
+          <button class="btn-run" onclick="runTool('tt-tm-in','tt-tm-out','tt-s1','','timing','tiktok')">⏰ Get Best Times</button>
+          <div class="results-box" id="tt-tm-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ INSTAGRAM ══ -->
+    <div id="ws-instagram" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          📸 Instagram Research
+          <span class="platform-badge" style="background:#fdf2f8;color:#e1306c;">Instagram</span>
+        </div>
+        <div class="page-sub">AI-powered hashtags, Reels strategy & profile insights</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="ig-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="ig-s2">0</div><div class="stat-label">Hashtags</div></div>
+        <div class="stat-card"><div class="stat-num" id="ig-s3">0</div><div class="stat-label">Reels Ideas</div></div>
+        <div class="stat-card"><div class="stat-num" id="ig-s4">0</div><div class="stat-label">Analyses</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">🔑</div>
+              <div><div class="tool-name">Hashtag Generator</div><div class="tool-desc">Niche hashtags that actually rank</div></div>
+            </div><div class="tool-chip">Tags</div>
+          </div>
+          <input class="tool-input" id="ig-kw-in" placeholder="e.g. sunset photography, travel…">
+          <button class="btn-run" onclick="runTool('ig-kw-in','ig-kw-out','ig-s1','ig-s2','hashtag','instagram')">⚡ Generate Hashtags</button>
+          <div class="results-box" id="ig-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">🎬</div>
+              <div><div class="tool-name">Reels Strategy</div><div class="tool-desc">Trending Reels ideas for your niche</div></div>
+            </div><div class="tool-chip">Reels</div>
+          </div>
+          <input class="tool-input" id="ig-rl-in" placeholder="e.g. food, fitness, beauty…">
+          <button class="btn-run" onclick="runTool('ig-rl-in','ig-rl-out','ig-s1','ig-s3','viral','instagram')">🎬 Get Reels Ideas</button>
+          <div class="results-box" id="ig-rl-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">👤</div>
+              <div><div class="tool-name">Profile Analyzer</div><div class="tool-desc">Content & growth strategy audit</div></div>
+            </div><div class="tool-chip">Analyze</div>
+          </div>
+          <input class="tool-input" id="ig-ac-in" placeholder="e.g. @username or niche type…">
+          <button class="btn-run" onclick="runTool('ig-ac-in','ig-ac-out','ig-s1','ig-s4','account','instagram')">🔍 Analyze Profile</button>
+          <div class="results-box" id="ig-ac-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">📈</div>
+              <div><div class="tool-name">Engagement Rate Tool</div><div class="tool-desc">Calculate & benchmark your ER</div></div>
+            </div><div class="tool-chip">Metrics</div>
+          </div>
+          <input class="tool-input" id="ig-fol" placeholder="Followers count (e.g. 25000)">
+          <input class="tool-input" id="ig-lks" placeholder="Avg likes per post (e.g. 800)">
+          <button class="btn-run" onclick="calcEngagement()">📈 Calculate Engagement</button>
+          <div class="results-box" id="ig-er-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">⚔️</div>
+              <div><div class="tool-name">Competitor Research</div><div class="tool-desc">Niche saturation & gaps</div></div>
+            </div><div class="tool-chip">Research</div>
+          </div>
+          <input class="tool-input" id="ig-cp-in" placeholder="e.g. skincare brands, fitness coaches…">
+          <button class="btn-run" onclick="runTool('ig-cp-in','ig-cp-out','ig-s1','','competitor','instagram')">⚔️ Research Competitors</button>
+          <div class="results-box" id="ig-cp-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon ig-icon">⏰</div>
+              <div><div class="tool-name">Best Posting Times</div><div class="tool-desc">When your audience is most active</div></div>
+            </div><div class="tool-chip">Schedule</div>
+          </div>
+          <input class="tool-input" id="ig-tm-in" placeholder="e.g. Pakistan, fashion, working women…">
+          <button class="btn-run" onclick="runTool('ig-tm-in','ig-tm-out','ig-s1','','timing','instagram')">⏰ Get Best Times</button>
+          <div class="results-box" id="ig-tm-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ LINKEDIN ══ -->
+    <div id="ws-linkedin" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          💼 LinkedIn Research
+          <span class="platform-badge" style="background:#eff6ff;color:#0077b5;">LinkedIn</span>
+        </div>
+        <div class="page-sub">B2B keywords, lead generation & industry trend research</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="li-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="li-s2">0</div><div class="stat-label">Keywords</div></div>
+        <div class="stat-card"><div class="stat-num" id="li-s3">0</div><div class="stat-label">Lead Strings</div></div>
+        <div class="stat-card"><div class="stat-num" id="li-s4">0</div><div class="stat-label">Post Ideas</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">🔑</div>
+              <div><div class="tool-name">Keyword Generator</div><div class="tool-desc">B2B & professional search terms</div></div>
+            </div><div class="tool-chip">Keywords</div>
+          </div>
+          <input class="tool-input" id="li-kw-in" placeholder="e.g. SaaS marketing, HR manager…">
+          <button class="btn-run" onclick="runTool('li-kw-in','li-kw-out','li-s1','li-s2','keyword','linkedin')">⚡ Generate Keywords</button>
+          <div class="results-box" id="li-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">📊</div>
+              <div><div class="tool-name">Industry Trends</div><div class="tool-desc">What professionals are talking about</div></div>
+            </div><div class="tool-chip">Trends</div>
+          </div>
+          <input class="tool-input" id="li-tr-in" placeholder="e.g. fintech, AI, healthcare…">
+          <button class="btn-run" onclick="runTool('li-tr-in','li-tr-out','li-s1','li-s4','hashtag','linkedin')">📊 Get Industry Trends</button>
+          <div class="results-box" id="li-tr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">🎯</div>
+              <div><div class="tool-name">Lead Finder</div><div class="tool-desc">Boolean & search strings for leads</div></div>
+            </div><div class="tool-chip">Leads</div>
+          </div>
+          <input class="tool-input" id="li-ld-in" placeholder="e.g. CEO, Marketing Director, SaaS…">
+          <button class="btn-run" onclick="runTool('li-ld-in','li-ld-out','li-s1','li-s3','leads','linkedin')">🎯 Generate Lead Strings</button>
+          <div class="results-box" id="li-ld-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">✍️</div>
+              <div><div class="tool-name">Viral Post Ideas</div><div class="tool-desc">High-engagement LinkedIn content</div></div>
+            </div><div class="tool-chip">Content</div>
+          </div>
+          <input class="tool-input" id="li-vr-in" placeholder="e.g. leadership, startup lessons…">
+          <button class="btn-run" onclick="runTool('li-vr-in','li-vr-out','li-s1','li-s4','viral','linkedin')">🚀 Get Post Ideas</button>
+          <div class="results-box" id="li-vr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">🏢</div>
+              <div><div class="tool-name">Company Analyzer</div><div class="tool-desc">Content strategy & positioning</div></div>
+            </div><div class="tool-chip">B2B</div>
+          </div>
+          <input class="tool-input" id="li-co-in" placeholder="e.g. Shopify, HubSpot, any company…">
+          <button class="btn-run" onclick="runTool('li-co-in','li-co-out','li-s1','','competitor','linkedin')">🏢 Analyze Company</button>
+          <div class="results-box" id="li-co-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon li-icon">👤</div>
+              <div><div class="tool-name">Profile Optimizer</div><div class="tool-desc">Profile improvement recommendations</div></div>
+            </div><div class="tool-chip">Profile</div>
+          </div>
+          <input class="tool-input" id="li-pr-in" placeholder="e.g. Software Engineer, Islamabad, 3yrs…">
+          <button class="btn-run" onclick="runTool('li-pr-in','li-pr-out','li-s1','','account','linkedin')">🔍 Optimize Profile</button>
+          <div class="results-box" id="li-pr-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ TWITTER ══ -->
+    <div id="ws-twitter" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          🐦 Twitter / X Research
+          <span class="platform-badge" style="background:#f0fdf4;color:#15803d;">Twitter/X</span>
+        </div>
+        <div class="page-sub">Tweet keywords, threads strategy & audience research</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="tw-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="tw-s2">0</div><div class="stat-label">Keywords</div></div>
+        <div class="stat-card"><div class="stat-num" id="tw-s3">0</div><div class="stat-label">Hashtags</div></div>
+        <div class="stat-card"><div class="stat-num" id="tw-s4">0</div><div class="stat-label">Thread Ideas</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">🔑</div>
+              <div><div class="tool-name">Tweet Keywords</div><div class="tool-desc">High-impression search terms</div></div>
+            </div><div class="tool-chip">Keywords</div>
+          </div>
+          <input class="tool-input" id="tw-kw-in" placeholder="e.g. crypto, AI tools, productivity…">
+          <button class="btn-run" onclick="runTool('tw-kw-in','tw-kw-out','tw-s1','tw-s2','keyword','twitter')">⚡ Find Keywords</button>
+          <div class="results-box" id="tw-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">🔥</div>
+              <div><div class="tool-name">Trending Topics</div><div class="tool-desc">What's hot right now in your niche</div></div>
+            </div><div class="tool-chip">Trending</div>
+          </div>
+          <input class="tool-input" id="tw-tr-in" placeholder="e.g. Pakistan tech, AI, finance…">
+          <button class="btn-run" onclick="runTool('tw-tr-in','tw-tr-out','tw-s1','tw-s3','hashtag','twitter')">🔥 Get Trends</button>
+          <div class="results-box" id="tw-tr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">🧵</div>
+              <div><div class="tool-name">Thread Ideas</div><div class="tool-desc">Viral thread structures & hooks</div></div>
+            </div><div class="tool-chip">Threads</div>
+          </div>
+          <input class="tool-input" id="tw-th-in" placeholder="e.g. business lessons, coding tips…">
+          <button class="btn-run" onclick="runTool('tw-th-in','tw-th-out','tw-s1','tw-s4','viral','twitter')">🧵 Generate Thread Ideas</button>
+          <div class="results-box" id="tw-th-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">👤</div>
+              <div><div class="tool-name">Account Analyzer</div><div class="tool-desc">Growth strategy & content audit</div></div>
+            </div><div class="tool-chip">Analyze</div>
+          </div>
+          <input class="tool-input" id="tw-ac-in" placeholder="e.g. @elonmusk or tech influencer…">
+          <button class="btn-run" onclick="runTool('tw-ac-in','tw-ac-out','tw-s1','','account','twitter')">🔍 Analyze Account</button>
+          <div class="results-box" id="tw-ac-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">⚔️</div>
+              <div><div class="tool-name">Competitor Research</div><div class="tool-desc">Niche gaps & positioning</div></div>
+            </div><div class="tool-chip">Research</div>
+          </div>
+          <input class="tool-input" id="tw-cp-in" placeholder="e.g. crypto Twitter, tech news…">
+          <button class="btn-run" onclick="runTool('tw-cp-in','tw-cp-out','tw-s1','','competitor','twitter')">⚔️ Research Competitors</button>
+          <div class="results-box" id="tw-cp-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon tw-icon">⏰</div>
+              <div><div class="tool-name">Best Tweet Times</div><div class="tool-desc">When to post for max impressions</div></div>
+            </div><div class="tool-chip">Schedule</div>
+          </div>
+          <input class="tool-input" id="tw-tm-in" placeholder="e.g. Pakistan, B2B, tech audience…">
+          <button class="btn-run" onclick="runTool('tw-tm-in','tw-tm-out','tw-s1','','timing','twitter')">⏰ Get Best Times</button>
+          <div class="results-box" id="tw-tm-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ PINTEREST ══ -->
+    <div id="ws-pinterest" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          📌 Pinterest Research
+          <span class="platform-badge" style="background:#fff5f5;color:#e60023;">Pinterest</span>
+        </div>
+        <div class="page-sub">Pin keywords, board strategy & viral content research</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="pt-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="pt-s2">0</div><div class="stat-label">Keywords</div></div>
+        <div class="stat-card"><div class="stat-num" id="pt-s3">0</div><div class="stat-label">Trends</div></div>
+        <div class="stat-card"><div class="stat-num" id="pt-s4">0</div><div class="stat-label">Pin Ideas</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">🔑</div>
+              <div><div class="tool-name">Keyword Generator</div><div class="tool-desc">Pinterest SEO search terms</div></div>
+            </div><div class="tool-chip">SEO</div>
+          </div>
+          <input class="tool-input" id="pt-kw-in" placeholder="e.g. home decor, wedding, recipes…">
+          <button class="btn-run" onclick="runTool('pt-kw-in','pt-kw-out','pt-s1','pt-s2','keyword','pinterest')">⚡ Generate Keywords</button>
+          <div class="results-box" id="pt-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">📌</div>
+              <div><div class="tool-name">Trending Pin Topics</div><div class="tool-desc">What's being saved right now</div></div>
+            </div><div class="tool-chip">Trends</div>
+          </div>
+          <input class="tool-input" id="pt-tr-in" placeholder="e.g. DIY, fashion, travel…">
+          <button class="btn-run" onclick="runTool('pt-tr-in','pt-tr-out','pt-s1','pt-s3','hashtag','pinterest')">📌 Get Trending Topics</button>
+          <div class="results-box" id="pt-tr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">🚀</div>
+              <div><div class="tool-name">Viral Pin Ideas</div><div class="tool-desc">High-save pin formats & concepts</div></div>
+            </div><div class="tool-chip">Viral</div>
+          </div>
+          <input class="tool-input" id="pt-vr-in" placeholder="e.g. budget meals, minimalist room…">
+          <button class="btn-run" onclick="runTool('pt-vr-in','pt-vr-out','pt-s1','pt-s4','viral','pinterest')">🚀 Get Pin Ideas</button>
+          <div class="results-box" id="pt-vr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">👤</div>
+              <div><div class="tool-name">Profile Analyzer</div><div class="tool-desc">Board strategy & growth tips</div></div>
+            </div><div class="tool-chip">Analyze</div>
+          </div>
+          <input class="tool-input" id="pt-ac-in" placeholder="e.g. home decor blogger, food pinner…">
+          <button class="btn-run" onclick="runTool('pt-ac-in','pt-ac-out','pt-s1','','account','pinterest')">🔍 Analyze Profile</button>
+          <div class="results-box" id="pt-ac-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">📊</div>
+              <div><div class="tool-name">Board Analyzer</div><div class="tool-desc">Board optimization & naming tips</div></div>
+            </div><div class="tool-chip">Boards</div>
+          </div>
+          <input class="tool-input" id="pt-bd-in" placeholder="e.g. minimalist interior, vegan recipes…">
+          <button class="btn-run" onclick="runTool('pt-bd-in','pt-bd-out','pt-s1','','competitor','pinterest')">📊 Analyze Board Niche</button>
+          <div class="results-box" id="pt-bd-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon pt-icon">🔍</div>
+              <div><div class="tool-name">Search Volume Insight</div><div class="tool-desc">Keyword demand & competition</div></div>
+            </div><div class="tool-chip">Volume</div>
+          </div>
+          <input class="tool-input" id="pt-sv-in" placeholder="Keywords separated by commas…">
+          <button class="btn-run" onclick="runTool('pt-sv-in','pt-sv-out','pt-s1','','leads','pinterest')">🔍 Check Search Demand</button>
+          <div class="results-box" id="pt-sv-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ FACEBOOK ══ -->
+    <div id="ws-facebook" class="workspace">
+      <div class="page-header">
+        <div class="page-title">
+          👥 Facebook Research
+          <span class="platform-badge" style="background:#eff6ff;color:#1877f2;">Facebook</span>
+        </div>
+        <div class="page-sub">Pages, groups, viral posts & ad audience research</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="fb-s1">0</div><div class="stat-label">Searches</div></div>
+        <div class="stat-card"><div class="stat-num" id="fb-s2">0</div><div class="stat-label">Keywords</div></div>
+        <div class="stat-card"><div class="stat-num" id="fb-s3">0</div><div class="stat-label">Post Ideas</div></div>
+        <div class="stat-card"><div class="stat-num" id="fb-s4">0</div><div class="stat-label">Audiences</div></div>
+      </div>
+      <div class="tool-grid">
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">🔑</div>
+              <div><div class="tool-name">Keyword Generator</div><div class="tool-desc">Facebook search & ad keywords</div></div>
+            </div><div class="tool-chip">Keywords</div>
+          </div>
+          <input class="tool-input" id="fb-kw-in" placeholder="e.g. online business, home cooking…">
+          <button class="btn-run" onclick="runTool('fb-kw-in','fb-kw-out','fb-s1','fb-s2','keyword','facebook')">⚡ Generate Keywords</button>
+          <div class="results-box" id="fb-kw-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">👥</div>
+              <div><div class="tool-name">Group Strategy</div><div class="tool-desc">Facebook group growth & engagement</div></div>
+            </div><div class="tool-chip">Groups</div>
+          </div>
+          <input class="tool-input" id="fb-gr-in" placeholder="e.g. fitness group, moms community…">
+          <button class="btn-run" onclick="runTool('fb-gr-in','fb-gr-out','fb-s1','fb-s3','account','facebook')">👥 Get Group Strategy</button>
+          <div class="results-box" id="fb-gr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">🚀</div>
+              <div><div class="tool-name">Viral Post Ideas</div><div class="tool-desc">High-share content for Facebook</div></div>
+            </div><div class="tool-chip">Viral</div>
+          </div>
+          <input class="tool-input" id="fb-vr-in" placeholder="e.g. parenting tips, business advice…">
+          <button class="btn-run" onclick="runTool('fb-vr-in','fb-vr-out','fb-s1','fb-s3','viral','facebook')">🚀 Get Viral Ideas</button>
+          <div class="results-box" id="fb-vr-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">📄</div>
+              <div><div class="tool-name">Page Analyzer</div><div class="tool-desc">Facebook page strategy & insights</div></div>
+            </div><div class="tool-chip">Pages</div>
+          </div>
+          <input class="tool-input" id="fb-pg-in" placeholder="e.g. local restaurant page, coaching page…">
+          <button class="btn-run" onclick="runTool('fb-pg-in','fb-pg-out','fb-s1','','competitor','facebook')">📄 Analyze Page Strategy</button>
+          <div class="results-box" id="fb-pg-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">🎯</div>
+              <div><div class="tool-name">Ad Audience Finder</div><div class="tool-desc">Target audience interests & demographics</div></div>
+            </div><div class="tool-chip">Ads</div>
+          </div>
+          <input class="tool-input" id="fb-ad-in" placeholder="e.g. Pakistani women 25-40, fitness product…">
+          <button class="btn-run" onclick="runTool('fb-ad-in','fb-ad-out','fb-s1','fb-s4','leads','facebook')">🎯 Find Ad Audiences</button>
+          <div class="results-box" id="fb-ad-out"></div>
+        </div>
+
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-meta"><div class="tool-icon fb-icon">⏰</div>
+              <div><div class="tool-name">Best Posting Times</div><div class="tool-desc">Optimal schedule for max reach</div></div>
+            </div><div class="tool-chip">Schedule</div>
+          </div>
+          <input class="tool-input" id="fb-tm-in" placeholder="e.g. Pakistan, moms, home business…">
+          <button class="btn-run" onclick="runTool('fb-tm-in','fb-tm-out','fb-s1','','timing','facebook')">⏰ Get Best Times</button>
+          <div class="results-box" id="fb-tm-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── CONFIG — Vercel API route ──
+const GEMINI_URL = '/api/gemini';  // pages/api/gemini.js se match karta hai
+
+// ── GLOBAL COUNTERS ───────────────────────────────────────────────────────
+let globalSearches = 0;
+let globalResults = 0;
+
+const counts = {};
+function tick(id, amount = 1) {
+  if (!id) return;
+  counts[id] = (counts[id] || 0) + amount;
+  const el = document.getElementById(id);
+  if (el) el.textContent = counts[id];
+}
+
+function tickGlobal(results = 0) {
+  globalSearches++;
+  globalResults += results;
+  const ds = document.getElementById('d-total');
+  const dr = document.getElementById('d-results');
+  if (ds) ds.textContent = globalSearches;
+  if (dr) dr.textContent = globalResults;
+}
+
+// ── PLATFORM SWITCH ───────────────────────────────────────────────────────
+function switchPlatform(platform, btn) {
+  document.querySelectorAll('.workspace').forEach(w => w.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('ws-' + platform).classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    // Find matching nav item by platform name
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.textContent.toLowerCase().includes(platform === 'dashboard' ? 'dashboard' : platform)) {
+        n.classList.add('active');
+      }
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PROMPTS ───────────────────────────────────────────────────────────────
+function buildPrompt(type, platform, query) {
+  const p = platform.charAt(0).toUpperCase() + platform.slice(1);
+  const prompts = {
+    keyword: `You are a ${p} SEO expert. Generate exactly 12 highly specific, high-search-volume keywords related to: "${query}" for ${p}.
+Rules:
+- Real keywords people actually search on ${p}
+- Mix of short-tail (1-2 words) and long-tail (3-5 words)
+- Sorted by search potential (highest first)
+- No generic filler words
+- Each keyword on a new line, NO numbering, NO bullets, NO extra text
+- Just the keywords, nothing else`,
+
+    hashtag: `You are a ${p} growth expert. Generate exactly 15 trending, high-reach hashtags for the topic: "${query}" on ${p}.
+Rules:
+- Start each with # symbol
+- Mix of: 3 mega (10M+ posts), 5 large (1-10M posts), 5 medium (100K-1M), 2 niche (<100K)
+- Only hashtags that are genuinely used on ${p}
+- Each on a new line, NO extra text, NO numbering
+- Just the hashtags, nothing else`,
+
+    viral: `You are a ${p} content strategist. Generate 6 viral content ideas for the topic: "${query}" on ${p}.
+Format each idea EXACTLY like this (one per line):
+[Hook/Title] | [Why it works]
+Example:
+I tried ${query} every day for 30 days | Transformation content gets high saves
+Rules:
+- Hooks must be attention-grabbing and specific
+- Why it works must be 1 short sentence
+- Based on actual ${p} content formats that perform well
+- No numbering, no extra text`,
+
+    account: `You are a ${p} analytics expert. Analyze the account/profile type: "${query}" on ${p}.
+Provide exactly 6 key insights in this format (one per line):
+[Label]: [Value or insight]
+Example:
+Content Type: Educational tutorials + POV videos
+Rules:
+- Be specific and actionable
+- Include: Content Type, Posting Frequency, Engagement Strategy, Growth Tactic, Audience, Best Content Format
+- No numbering, no bullets, no extra text`,
+
+    competitor: `You are a ${p} market researcher. Analyze the competitive landscape for: "${query}" on ${p}.
+Provide exactly 6 market insights in this format (one per line):
+[Label]: [Value or insight]
+Example:
+Market Saturation: Medium — 50K+ creators, but quality content gaps exist
+Rules:
+- Include: Market Saturation, Top Content Format, Avg Posting Frequency, Key Differentiator, Opportunity Score (X/10), Recommended Entry Strategy
+- Be specific and data-driven in tone
+- No numbering, no bullets`,
+
+    timing: `You are a ${p} algorithm expert. Provide the best posting times for: "${query}" (audience/niche/timezone) on ${p}.
+Provide exactly 5 timing insights in this format (one per line):
+[Time/Day]: [Reason]
+Example:
+Tuesday 7-9 PM PKT: Peak scroll time for working professionals
+Rules:
+- Be specific with times and reasons
+- Include: 3 best time slots, 1 worst time to avoid, 1 posting frequency recommendation
+- No numbering, no bullets`,
+
+    leads: `You are a ${p === 'Facebook' ? 'Facebook Ads & audience targeting' : 'LinkedIn lead generation'} expert. Generate lead-finding search strings or audience targeting insights for: "${query}".
+Provide exactly 8 items in this format (one per line):
+[Search String or Audience Insight]
+Example:
+"Marketing Director" AND "SaaS" site:linkedin.com
+Rules:
+- Mix of search strings and targeting tips
+- Target decision-makers and relevant roles/interests
+- Each on its own line, ready to copy-paste
+- No numbering, no explanation, just the strings`
+  };
+  return prompts[type] || prompts.keyword;
+}
+
+// ── PARSE & RENDER ────────────────────────────────────────────────────────
+function parseAndRender(text, type, outputId) {
+  const box = document.getElementById(outputId);
+  const lines = text.trim().split('\n').filter(l => l.trim());
+
+  if (type === 'keyword' || type === 'hashtag') {
+    const label = type === 'hashtag' ? 'Hashtags' : 'Keywords';
+    box.innerHTML = `
+      <div class="result-label">✦ ${lines.length} ${label} Generated</div>
+      <div class="tag-wrap" id="${outputId}-tags"></div>
+      <div class="copy-all-row">
+        <button class="btn-secondary" onclick="copyAll('${outputId}-tags', this)">📋 Copy All</button>
+      </div>`;
+    const wrap = document.getElementById(outputId + '-tags');
+    lines.forEach(kw => {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.textContent = kw.trim();
+      span.onclick = () => {
+        navigator.clipboard.writeText(kw.trim()).catch(() => {});
+        span.classList.add('copied');
+        setTimeout(() => span.classList.remove('copied'), 1500);
+      };
+      wrap.appendChild(span);
+    });
+  } else if (type === 'viral') {
+    box.innerHTML = `<div class="result-label">✦ ${lines.length} Viral Ideas</div>`;
+    lines.forEach(line => {
+      const parts = line.split('|');
+      const hook = parts[0] ? parts[0].trim() : line.trim();
+      const why = parts[1] ? parts[1].trim() : '';
+      box.innerHTML += `<div class="result-row">
+        <span style="font-weight:600;color:var(--gray-900);max-width:68%">${hook}</span>
+        <span style="font-family:inherit;font-size:11px;color:var(--gray-400);text-align:right;max-width:30%">${why}</span>
+      </div>`;
+    });
+  } else if (type === 'leads') {
+    box.innerHTML = `
+      <div class="result-label">✦ ${lines.length} Search Strings</div>
+      <div class="tag-wrap" id="${outputId}-tags"></div>
+      <div class="copy-all-row">
+        <button class="btn-secondary" onclick="copyAll('${outputId}-tags', this)">📋 Copy All</button>
+      </div>`;
+    const wrap = document.getElementById(outputId + '-tags');
+    lines.forEach(line => {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.style.cssText = 'border-radius:6px;font-family:monospace;font-size:11px;';
+      span.textContent = line.trim();
+      span.onclick = () => {
+        navigator.clipboard.writeText(line.trim()).catch(() => {});
+        span.classList.add('copied');
+        setTimeout(() => span.classList.remove('copied'), 1500);
+      };
+      wrap.appendChild(span);
+    });
+  } else {
+    box.innerHTML = `<div class="result-label">✦ Analysis Results</div>`;
+    lines.forEach(line => {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > -1) {
+        const label = line.slice(0, colonIdx).trim().replace(/^\[|\]$/g,'');
+        const val = line.slice(colonIdx+1).trim().replace(/^\[|\]$/g,'');
+        box.innerHTML += `<div class="result-row">
+          <span style="color:var(--gray-500);font-weight:500;max-width:40%">${label}</span>
+          <span style="font-family:inherit;text-align:right;max-width:57%;white-space:normal;color:var(--gray-900);font-weight:600;font-size:12px">${val}</span>
+        </div>`;
+      } else {
+        box.innerHTML += `<div class="result-row" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--blue)">${line}</div>`;
+      }
+    });
+  }
+  return lines.length;
+}
+
+// ── COPY ALL ──────────────────────────────────────────────────────────────
+function copyAll(wrapperId, btn) {
+  const tags = document.querySelectorAll(`#${wrapperId} .tag`);
+  const text = Array.from(tags).map(t => t.textContent).join('\n');
+  navigator.clipboard.writeText(text).catch(() => {});
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }
+}
+
+// ── MAIN TOOL RUNNER ──────────────────────────────────────────────────────
+async function runTool(inputId, outputId, counter1, counter2, type, platform) {
+  const query = document.getElementById(inputId).value.trim();
+  if (!query) { alert('Please enter something first'); return; }
+
+  const box = document.getElementById(outputId);
+  box.classList.add('show');
+  box.innerHTML = `<div class="loading-state"><div class="spinner"></div> AI analyzing "${query}"…</div>`;
+
+  const btn = document.querySelector(`[onclick*="${outputId}"]`);
+  if (btn) btn.disabled = true;
+
+  tick(counter1);
+
+  try {
+    const prompt = buildPrompt(type, platform, query);
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || 'API Error ' + res.status);
+    }
+
+    const data = await res.json();
+    const text = data.text || '';
+    if (!text) throw new Error('Empty response from AI');
+
+    const lineCount = parseAndRender(text, type, outputId);
+    tick(counter2, lineCount);
+    tickGlobal(lineCount);
+
+  } catch (err) {
+    let msg = err.message;
+    if (msg.includes('API_KEY_INVALID') || msg.includes('400')) {
+      msg = 'Invalid API Key. Please check your Gemini API key in the config.';
+    } else if (msg.includes('429')) {
+      msg = 'Rate limit reached. Please wait a moment and try again.';
+    } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+      msg = 'Network error. Check your internet connection.';
+    }
+    box.innerHTML = `<div class="error-msg">⚠️ ${msg}</div>`;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+// ── ENGAGEMENT CALCULATOR ─────────────────────────────────────────────────
+function calcEngagement() {
+  const fol = parseInt(document.getElementById('ig-fol').value);
+  const lks = parseInt(document.getElementById('ig-lks').value);
+  const box = document.getElementById('ig-er-out');
+  if (!fol || !lks) { alert('Please fill both fields'); return; }
+  const rate = ((lks / fol) * 100).toFixed(2);
+  const rating = rate < 1 ? '🔴 Below Average' : rate < 3 ? '🟡 Average' : rate < 6 ? '🟢 Good' : '🟣 Excellent';
+  const tip = rate < 1 ? 'Focus on Reels & carousel posts — they get 3x more reach' :
+              rate < 3 ? 'Consistent posting + replying to comments will boost ER' :
+              rate < 6 ? 'Great! Experiment with collaborations to grow faster' :
+              'Exceptional! You are ready to monetize — approach brands now';
+  box.classList.add('show');
+  box.innerHTML = `
+    <div class="result-label">✦ Engagement Analysis</div>
+    <div class="result-row"><span>Engagement Rate</span><span class="result-val">${rate}%</span></div>
+    <div class="result-row"><span>Rating</span><span class="result-val">${rating}</span></div>
+    <div class="result-row"><span>Industry Average</span><span class="result-val">~1–3%</span></div>
+    <div class="result-row"><span>Estimated Reach/Post</span><span class="result-val">${Math.round(fol * 0.12).toLocaleString()}</span></div>
+    <div class="result-row"><span>Actionable Tip</span><span style="color:var(--blue);font-size:12px;text-align:right;max-width:60%;white-space:normal">${tip}</span></div>`;
+  tick('ig-s1');
+  tickGlobal(1);
+}
+</script>
+</body>
+</html>
