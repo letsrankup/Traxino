@@ -1,10 +1,10 @@
 {
   "name": "my-social-research-app",
   "version": "1.0.0",
-  "description": "Gemini AI integration",
-  "main": "index.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {}
+  "type": "module",
+  "description": "Gemini AI integration for Social Research",
+  "engines": {
+    "node": "18.x"
+  }
 }
+
