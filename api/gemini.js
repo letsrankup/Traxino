@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Only POST allowed
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -9,25 +8,32 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Prompt is required' });
   }
 
-  // Key sirf Vercel Environment Variable mein hai — HTML mein nahi
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-
   if (!GEMINI_API_KEY) {
     return res.status(500).json({ error: 'API key not configured on server' });
   }
 
+  // AQ. format = OAuth Bearer token, AIzaSy = API key param
+  const isOAuthKey = GEMINI_API_KEY.startsWith('AQ.');
+
+  const url = isOAuthKey
+    ? 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
+    : `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (isOAuthKey) {
+    headers['Authorization'] = `Bearer ${GEMINI_API_KEY}`;
+  }
+
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
-        })
-      }
-    );
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+      })
+    });
 
     if (!response.ok) {
       const err = await response.json();
